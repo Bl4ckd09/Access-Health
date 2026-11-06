@@ -203,8 +203,8 @@ def biz_profile():
                     ch_note = f"Partial name match. Registered at {best.get('postcode','unknown')}. Trading address may differ."
             elif scored:
                 ch_note = f"No close match found. Closest: '{scored[0][2].get('name','')}' — check the spelling."
-        except Exception as e:
-            ch_note = f"Companies House lookup failed: {e}"
+        except Exception:
+            ch_note = "Companies House lookup failed."
 
     # Fallback: local bulk index (postcode first, then FTS name search)
     if not sic_codes:
@@ -332,8 +332,8 @@ def draft_email():
             from agent.llm import stream_chat
             for chunk in stream_chat(prompt):
                 yield f"data: {json.dumps({'t': chunk})}\n\n"
-        except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        except Exception:
+            yield f"data: {json.dumps({'error': 'Draft generation failed'})}\n\n"
         yield "data: [DONE]\n\n"
     return Response(stream_with_context(generate()), mimetype="text/event-stream",
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -364,8 +364,8 @@ def draft_grant():
             from agent.llm import stream_chat
             for chunk in stream_chat(prompt):
                 yield f"data: {json.dumps({'t': chunk})}\n\n"
-        except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        except Exception:
+            yield f"data: {json.dumps({'error': 'Draft generation failed'})}\n\n"
         yield "data: [DONE]\n\n"
     return Response(stream_with_context(generate()), mimetype="text/event-stream",
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -513,8 +513,8 @@ def companies_at():
                 "source": "api",
             })
         return jsonify({"companies": companies, "total": raw.get("hits", len(companies)), "source": "api"})
-    except Exception as exc:
-        return jsonify({"companies": [], "total": 0, "error": str(exc)})
+    except Exception:
+        return jsonify({"companies": [], "total": 0, "error": "Company lookup failed"})
 
 
 @app.route("/api/grants", methods=["POST"])
