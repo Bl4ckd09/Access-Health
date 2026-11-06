@@ -40,6 +40,7 @@ The HUD's header links across to the sibling app (host-relative `//<host>:5000`)
 or a public IP with both ports open the two feel like one product. STELLA is documented separately in
 [`ledger/PROGRESS.md`](ledger/PROGRESS.md), [`ledger/PRD.md`](ledger/PRD.md) and
 [`ledger/PROJECT_BIBLE.md`](ledger/PROJECT_BIBLE.md).
+The STELLA API returns generic errors for upstream failures. It does not send exception details to clients.
 
 ---
 

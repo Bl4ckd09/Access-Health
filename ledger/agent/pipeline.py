@@ -161,10 +161,10 @@ def run_by_name(name: str, *, api_key: str | None = None) -> dict:
     try:
         from data.ingest_companies import search_by_name
         candidates = search_by_name(name, key)
-    except Exception as exc:
+    except Exception:
         return {
             "query": name, "query_type": "name", "businesses": [], "lsoa": None,
-            "error": f"companies_house_error: {exc}",
+            "error": "companies_house_error",
         }
 
     if not candidates:
